@@ -1,12 +1,11 @@
 const path = require("path");
 const { PrismaClient } = require("@prisma/client");
+const { verify } = require("crypto");
 
 const prisma = new PrismaClient();
 
 class VeiculoController {
-  static formCadastro(req, res) {
-    res.sendFile(path.join(__dirname, "..", "views", "formVeiculo.html"));
-  }
+
 
   static async cadastrar(req, res) {
     const novoVeiculo = await prisma.veiculo.create({
@@ -17,7 +16,9 @@ class VeiculoController {
         cor: req.body.cor,
       },
     });
-    res.send(`O veiculo foi cadastrado sob o ID: ${novoVeiculo.id}`);
+    res.json({
+        veiculoID: novoVeiculo.id,
+    });
   }
 
   static async buscarTodos(req, res) {
