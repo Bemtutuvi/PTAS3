@@ -21,10 +21,18 @@ class VeiculoController {
     });
   }
 
-  static async buscarTodos(req, res) {
-    const veiculos = await prisma.veiculo.findMany();
+  static async buscar(req, res) {
+    const where={};
+    if(req.params.id!=null){
+      where.id=parseInt(req.params.id);
+    }
+    const veiculos = await prisma.veiculo.findMany({
+      where: where,
+    });
 
-    res.send(veiculos);
+    res.json({
+      veiculos,
+    });
   }
 }
 
