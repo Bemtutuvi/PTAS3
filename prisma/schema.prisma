@@ -22,3 +22,5 @@ model Usuario {
   email  String @unique
   senha  String
 }
+
+
