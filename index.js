@@ -8,6 +8,8 @@ app.get("/", (req, res) => {
   res.send("Hello people!");
 });
 
+const usuariocontroler = require("./controllers/usuariocontroler")
+
 const veiculoRoutes= require("./routes/veiculoroutes");
 app.use("/veiculos",veiculoRoutes);
 
