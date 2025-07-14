@@ -2,7 +2,7 @@
 const bcryptjs = require("bcryptjs");
 
 //gera tokens de acesso para usuarios autenticados
-const jwt= require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const { PrismaClient } = require("../generate/prisma/cliente");
 const client = new PrismaClient();
@@ -14,7 +14,7 @@ class UsuarioController {
     const salt = bcryptjs.getSaltSync(8);
     const hashSenha = bcryptjs.hashSync(senha, salt);
 
-    const usuario = await  client.usuario.create({
+    const usuario = await client.usuario.create({
       data: {
         nome,
         email,
@@ -41,18 +41,61 @@ class UsuarioController {
 
     const senhaCorreta = bcryptjs.compareSync(senha, usuario.senha);
 
-    if(!senhaCorreta){
+    if (!senhaCorreta) {
       res.json({
-        msg:"Senha Incorreta!",
+        msg: "Senha Incorreta!",
       });
       return;
     }
-const token= jwt.sign({id:usuario.id}, process.env.SECRET_KEY,{expiresIn:"2h",});
+    const token = jwt.sign({ id: usuario.id }, process.env.SECRET_KEY, {
+      expiresIn: "2h",
+    });
 
     res.json({
       msg: "Logado!",
       token: token,
     });
+  }
+
+  static async verificarAutenticacao(req, res, next) {
+    const authHeader = req.headres["authorization"];
+
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+      jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
+        if (err) {
+          return res.json({
+            msg: "Token inválido!",
+          });
+        }
+        req.usuarioID = payload.id;
+        next();
+      });
+    } else {
+      return res.json({
+        msg: "Token não encontrado",
+      });
+    }
+  }
+  static async verificaIsAdmin(req, res, next) {
+    if (!req.usuarioID) {
+      return res.json({
+        msg: "Você não está autenticado!",
+      });
+    }
+
+    const usuario = await client.usuario.findUnique({
+      where: {
+        id: req.usuarioID,
+      },
+    });
+    if (!usuario.isAdmin) {
+      return res.json({
+        msg: "Acesso negado! Você não é um administrador!",
+      });
+    }
+
+    next();
   }
 }
 
