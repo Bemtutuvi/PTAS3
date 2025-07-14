@@ -7,7 +7,7 @@ app.use(express.json());
 const usuarioRoutes = require("./routes/usuarioroutes");
 app.use("/usuario", usuarioRoutes);
 
-const usuariocontroler = require("./controllers/usuariocontroler");
+const usuariocontroler = require("./controllers/usuariocontroller");
 
 app.get("/areaLogado", usuariocontroler.verificarAutenticacao, (req, res) => {
   res.json({

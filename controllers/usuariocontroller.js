@@ -4,7 +4,7 @@ const bcryptjs = require("bcryptjs");
 //gera tokens de acesso para usuarios autenticados
 const jwt = require("jsonwebtoken");
 
-const { PrismaClient } = require("../generate/prisma/cliente");
+const { PrismaClient } = require("@prisma/client");
 const client = new PrismaClient();
 
 class UsuarioController {
