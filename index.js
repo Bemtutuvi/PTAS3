@@ -4,8 +4,18 @@ app.use(express.urlencoded({ extends: true }));
 
 app.use(express.json())
 
-app.get("/", (req, res) =>{
-res.send("ola mundo?");
+const usuarioRoutes = require("./routes/usuarioroutes");
+app.use("/usuario", usuarioRoutes);
+
+const usuariocontroler = require("./controllers/usuariocontroller");
+
+app.get("/areaLogado", usuariocontroler.verificarAutenticacao, (req, res) => {
+  res.json({
+    msg:
+      "Você está logado com o ID " +
+      req.usuarioID +
+      "e pode acessar este recurso.",
+  });
 });
 
 const veiculoRoute = require("./routes/veiculoroutes")
