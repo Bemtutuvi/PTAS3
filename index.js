@@ -1,43 +1,40 @@
-const express = require ('express');
+const express = require("express");
 const app = express();
-app.use(express.urlencoded({ extends: true }));
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.json())
+app.use(express.json());
 
-const usuarioRoutes = require("./routes/usuarioroutes");
-app.use("/usuario", usuarioRoutes);
-
-const usuariocontroler = require("./controllers/usuariocontroller");
-
-app.get("/areaLogado", usuariocontroler.verificarAutenticacao, (req, res) => {
-  res.json({
-    msg:
-      "Você está logado com o ID " +
-      req.usuarioID +
-      "e pode acessar este recurso.",
-  });
-});
-
-const veiculoRoute = require("./routes/veiculoroutes")
-app. use("/veiculos", veiculoRoute);
+const veiculoRoute = require("./routes/veiculoroutes");
+app.use("/veiculos", veiculoRoute);
 
 const usuarioRoute = require("./routes/usuarioroutes");
 const usuarioController = require("./controllers/usuariocontroller");
-app. use("/usuarios", usuarioRoute);
+app.use("/usuario", usuarioRoute);
 
-app.get("/areaLogada", usuarioController.vereficarAutentificacao, (req, res) => {
+app.get("/areaLogada", usuarioController.verificarAutenticacao, (req, res) => {
+  res.json({
+    msg:
+      "Você está logado com o ID: " +
+      req.usuarioID +
+      " e você está permitido a acessar esta área logada",
+  });
+});
+
+app.get(
+  "/areaAdmin",
+  usuarioController.verificarAutenticacao,
+  usuarioController.verificaIsAdmin,
+  (req, res) => {
     res.json({
-        msg:"vcesta logando com o ID: "
-        + req.usuarioId
-        + "e vc esta permitido a acessar esta area logada"
-});
-
-});
+      msg: "Você é um administrador!",
+    });
+  }
+);
 
 app.listen(8000, (err) => {
-    if (err) {
-        console.log("Erro: " + JSON.stringify(err));
-    }else{
-        console.log(`servidor rodando na porta http://localhost:${8000}`);
-    }
-})
+  if (err) {
+    console.log("Erro: " + JSON.stringify(err));
+  } else {
+    console.log(`servidor rodando na porta http://localhost:${8000}`);
+  }
+});

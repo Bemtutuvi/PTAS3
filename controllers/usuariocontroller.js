@@ -11,7 +11,7 @@ class UsuarioController {
   static async cadastrar(req, res) {
     const { nome, email, senha } = req.body;
 
-    const salt = bcryptjs.getSaltSync(8);
+    const salt = bcryptjs.genSaltSync(8);
     const hashSenha = bcryptjs.hashSync(senha, salt);
 
     const usuario = await client.usuario.create({
@@ -58,7 +58,7 @@ class UsuarioController {
   }
 
   static async verificarAutenticacao(req, res, next) {
-    const authHeader = req.headres["authorization"];
+    const authHeader = req.headers["authorization"];
 
     if (authHeader) {
       const token = authHeader.split(" ")[1];
