@@ -5,8 +5,6 @@ const { verify } = require("crypto");
 const prisma = new PrismaClient();
 
 class VeiculoController {
-
-
   static async cadastrar(req, res) {
     const novoVeiculo = await prisma.veiculo.create({
       data: {
@@ -17,14 +15,14 @@ class VeiculoController {
       },
     });
     res.json({
-        veiculoID: novoVeiculo.id,
+      veiculoID: novoVeiculo.id,
     });
   }
 
   static async buscar(req, res) {
-    const where={};
-    if(req.params.id!=null){
-      where.id=parseInt(req.params.id);
+    const where = {};
+    if (req.params.id != null) {
+      where.id = parseInt(req.params.id);
     }
     const veiculos = await prisma.veiculo.findMany({
       where: where,
